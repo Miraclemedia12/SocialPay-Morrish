@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialPay - Create Account</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        socialGreen: '#00FF88',
+                        socialDark: '#0B130E',
+                        socialCard: '#12221A',
+                        socialBorder: '#1F3827',
+                        darkHover: '#182C20'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B130E;
+            color: #FFFFFF;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0B130E; }
+        ::-webkit-scrollbar-thumb { background: #1F3827; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-socialGreen selection:text-black">
+
+    <!-- HEADER -->
+    <header class="w-full py-6 px-6 flex items-center justify-between max-w-4xl mx-auto">
+        <a href="index.html" class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-socialGreen flex items-center justify-center text-black font-black text-lg shadow-lg shadow-socialGreen/20">
+                SS
+            </div>
+            <span class="text-lg font-bold tracking-tight text-white">SocialPay SS</span>
+        </a>
+        <a href="login.html" class="text-xs font-semibold text-socialGreen hover:underline">Login</a>
+    </header>
+
+    <!-- MAIN REGISTRATION CONTAINER -->
+    <main class="max-w-xl w-full mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Create Account</h1>
+            <p class="text-zinc-400 text-xs sm:text-sm">Select a membership package to claim your bonus balance</p>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-6">
+            
+            <!-- SELECT MEMBERSHIP PACKAGE -->
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">Select Membership Package</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Standard Package -->
+                    <div type="button" onclick="selectPackage('Standard', 15000, 20000, this)" id="pkgStandard" class="package-card cursor-pointer bg-[#12221A] border-2 border-[#1F3827] rounded-2xl p-5 relative transition-all hover:border-socialGreen/50">
+                        <div class="text-xs font-bold uppercase text-zinc-400 tracking-wider mb-1">Standard</div>
+                        <div class="text-2xl font-extrabold text-white mb-3">₦15,000</div>
+                        <div class="text-[11px] text-zinc-400">Welcome Bonus:</div>
+                        <div class="text-sm font-bold text-socialGreen">₦20,000</div>
+                    </div>
+
+                    <!-- Premium Package -->
+                    <div type="button" onclick="selectPackage('Premium', 30000, 50000, this)" id="pkgPremium" class="package-card cursor-pointer bg-[#12221A] border-2 border-socialGreen ring-2 ring-socialGreen/30 rounded-2xl p-5 relative transition-all">
+                        <div class="absolute -top-3 right-4 bg-socialGreen text-black text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider shadow">Popular</div>
+                        <div class="absolute -top-3 left-4 bg-[#1B3827] text-socialGreen border border-[#2B543A] text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">Strictly Saved</div>
+                        <div class="text-xs font-bold uppercase text-zinc-400 tracking-wider mb-1 mt-1">Premium</div>
+                        <div class="text-2xl font-extrabold text-white mb-3">₦30,000</div>
+                        <div class="text-[11px] text-zinc-400">Welcome Bonus:</div>
+                        <div class="text-sm font-bold text-socialGreen">₦50,000</div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedPackageName" value="Premium">
+                <input type="hidden" id="selectedPackagePrice" value="30000">
+                <input type="hidden" id="selectedPackageBonus" value="50000">
+            </div>
+
+            <!-- FIRST & LAST NAME -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">First Name</label>
+                    <input type="text" id="firstName" required placeholder="John" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Last Name</label>
+                    <input type="text" id="lastName" required placeholder="Okankwo" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+                </div>
+            </div>
+
+            <!-- USERNAME -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Username</label>
+                <input type="text" id="username" required placeholder="Choose a unique username" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+            </div>
+
+            <!-- EMAIL ADDRESS -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Email Address</label>
+                <input type="email" id="email" required placeholder="you@email.com" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+            </div>
+
+            <!-- PHONE NUMBER -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Phone Number</label>
+                <input type="tel" id="phone" required placeholder="08012345678" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+            </div>
+
+            <!-- PASSWORD -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Password</label>
+                <input type="password" id="password" required placeholder="••••••••" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+            </div>
+
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" id="submitBtn" class="w-full bg-socialGreen text-black font-bold py-4 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/15 flex items-center justify-center gap-2 text-base">
+                Create Account & Continue <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+
+            <!-- FOOTER LOGIN LINK -->
+            <p class="text-center text-xs text-zinc-400 pt-2">
+                Already have an account? <a href="login.html" class="text-socialGreen font-bold hover:underline">Login</a>
+            </p>
+        </form>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full py-6 text-center text-xs text-zinc-500">
+        &copy; 2026 SocialPay SS. All rights reserved.
+    </footer>
+
+    <!-- CUSTOM UNIQUE POPUP MODAL FOR ERRORS & SUCCESS -->
+    <div id="customModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#12221A] border border-[#213F2C] w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
+            <div id="modalIcon" class="w-12 h-12 rounded-full bg-emerald-500/20 text-socialGreen flex items-center justify-center text-xl mx-auto mb-4">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="modalTitle" class="text-lg font-bold text-white mb-2">Success</h3>
+            <p id="modalMessage" class="text-xs text-zinc-400 mb-6">Account created successfully!</p>
+            <button onclick="closeModal()" class="w-full bg-socialGreen text-black font-bold py-3 rounded-xl text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all">Okay</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration provided
+        const firebaseConfig = {
+            apiKey: "AIzaSyDzDjgSqldDD7DLomACfr95ZKpnCzq4_cE",
+            authDomain: "socialpay-morrish.firebaseapp.com",
+            projectId: "socialpay-morrish",
+            storageBucket: "socialpay-morrish.firebasestorage.app",
+            messagingSenderId: "736329222171",
+            appId: "1:736329222171:web:d122b49971db82c93490be",
+            measurementId: "G-VSVFVJKS3M"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.selectPackage = function(name, price, bonus, element) {
+            document.querySelectorAll('.package-card').forEach(card => {
+                card.classList.remove('border-socialGreen', 'ring-2', 'ring-socialGreen/30');
+                card.classList.add('border-[#1F3827]');
+            });
+            element.classList.remove('border-[#1F3827]');
+            element.classList.add('border-socialGreen', 'ring-2', 'ring-socialGreen/30');
+
+            document.getElementById('selectedPackageName').value = name;
+            document.getElementById('selectedPackagePrice').value = price;
+            document.getElementById('selectedPackageBonus').value = bonus;
+        };
+
+        window.showModal = function(title, message, isError = false, callback = null) {
+            const modal = document.getElementById('customModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalTitle.innerText = title;
+            modalMessage.innerText = message;
+
+            if (isError) {
+                modalIcon.className = "w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl mx-auto mb-4";
+                modalIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                modalIcon.className = "w-12 h-12 rounded-full bg-emerald-500/20 text-socialGreen flex items-center justify-center text-xl mx-auto mb-4";
+                modalIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }
+
+            modal.classList.remove('hidden');
+            window.modalCallback = callback;
+        };
+
+        window.closeModal = function() {
+            document.getElementById('customModal').classList.add('hidden');
+            if (typeof window.modalCallback === 'function') {
+                window.modalCallback();
+            }
+        };
+
+        window.handleRegister = async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Creating Account...";
+
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const packageName = document.getElementById('selectedPackageName').value;
+            const packagePrice = document.getElementById('selectedPackagePrice').value;
+            const packageBonus = document.getElementById('selectedPackageBonus').value;
+
+            try {
+                // Check if username already exists in Firestore
+                const userRef = doc(db, "users", username);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    showModal("Username Taken", "This username is already used by another member. Please choose a different unique username.", true);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Create Account & Continue";
+                    return;
+                }
+
+                // Save user details to Firebase Firestore
+                await setDoc(userRef, {
+                    username: username,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phone,
+                    password: password, // In production, hash passwords securely
+                    membership: {
+                        name: packageName,
+                        price: packagePrice,
+                        bonus: packageBonus
+                    },
+                    walletBalance: parseInt(packageBonus),
+                    createdAt: new Date().toISOString()
+                });
+
+                showModal("Registration Successful", "Your account has been successfully created! Redirecting to login...", false, () => {
+                    window.location.href = "login.html";
+                });
+
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                showModal("Connection Error", "Failed to connect to database. Please check your internet connection.", true);
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Create Account & Continue";
+            }
+        };
+    </script>
+</body>
+</html>
