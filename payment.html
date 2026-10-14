@@ -91,13 +91,13 @@
                 <div>
                     <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Account Number</p>
                     <div class="flex items-center justify-between bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3">
-                        <span id="dbAccountNumber" class="text-lg font-bold text-socialGreen tracking-wider">3004456598</span>
+                        <span id="dbAccountNumber" class="text-lg font-bold text-socialGreen tracking-wider animate-pulse">Loading...</span>
                     </div>
                 </div>
                 <div>
                     <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Bank Name</p>
                     <div class="bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3">
-                        <span id="dbBankName" class="text-sm font-bold text-white">Kuda Bank</span>
+                        <span id="dbBankName" class="text-sm font-bold text-white animate-pulse">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
             <div>
                 <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Account Name</p>
                 <div class="bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3">
-                    <span id="dbAccountName" class="text-sm font-bold text-white">Globwest Enterprise - Paramountttt</span>
+                    <span id="dbAccountName" class="text-sm font-bold text-white animate-pulse">Loading...</span>
                 </div>
             </div>
 
@@ -224,7 +224,16 @@
         document.getElementById('noticeAmount2').innerText = "₦" + planAmount.toLocaleString();
         document.getElementById('noticePlanName').innerText = planTitle;
 
-        // Fetch payment settings from Firebase (Admin editable)
+        // Immediately apply cached settings if available for instant render
+        const cachedSettings = localStorage.getItem("livePaymentSettings");
+        if (cachedSettings) {
+            try {
+                const data = JSON.parse(cachedSettings);
+                renderPaymentSettings(data);
+            } catch(e) {}
+        }
+
+        // Fetch live payment settings from Firebase (Admin editable)
         async function loadPaymentSettings() {
             try {
                 const settingsRef = doc(db, "settings", "payment");
@@ -232,24 +241,44 @@
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.accountNumber) document.getElementById('dbAccountNumber').innerText = data.accountNumber;
-                    if (data.bankName) document.getElementById('dbBankName').innerText = data.bankName;
-                    if (data.accountName) document.getElementById('dbAccountName').innerText = data.accountName;
-                    if (data.telegramPaymentLink) document.getElementById('completedPaymentBtn').href = data.telegramPaymentLink;
-                    if (data.telegramSupportLink) document.getElementById('supportBtn').href = data.telegramSupportLink;
+                    localStorage.setItem("livePaymentSettings", JSON.stringify(data));
+                    renderPaymentSettings(data);
                 } else {
                     // Initialize default settings in Firestore if not present
-                    await setDoc(settingsRef, {
+                    const defaultData = {
                         accountNumber: "3004456598",
                         bankName: "Kuda Bank",
                         accountName: "Globwest Enterprise - Paramountttt",
                         telegramPaymentLink: "https://t.me/",
                         telegramSupportLink: "https://t.me/"
-                    });
+                    };
+                    await setDoc(settingsRef, defaultData);
+                    renderPaymentSettings(defaultData);
                 }
             } catch (error) {
                 console.error("Error loading payment settings from Firebase:", error);
             }
+        }
+
+        function renderPaymentSettings(data) {
+            const accNumEl = document.getElementById('dbAccountNumber');
+            const bankNameEl = document.getElementById('dbBankName');
+            const accNameEl = document.getElementById('dbAccountName');
+
+            if (data.accountNumber) {
+                accNumEl.innerText = data.accountNumber;
+                accNumEl.classList.remove('animate-pulse');
+            }
+            if (data.bankName) {
+                bankNameEl.innerText = data.bankName;
+                bankNameEl.classList.remove('animate-pulse');
+            }
+            if (data.accountName) {
+                accNameEl.innerText = data.accountName;
+                accNameEl.classList.remove('animate-pulse');
+            }
+            if (data.telegramPaymentLink) document.getElementById('completedPaymentBtn').href = data.telegramPaymentLink;
+            if (data.telegramSupportLink) document.getElementById('supportBtn').href = data.telegramSupportLink;
         }
 
         loadPaymentSettings();
