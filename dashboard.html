@@ -36,8 +36,8 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-socialGreen selection:text-black pb-24">
 
-    <!-- WELCOME BONUS POPUP (Triggers automatically on entry) -->
-    <div id="bonusPopup" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <!-- WELCOME BONUS POPUP (Triggers only for first-time users) -->
+    <div id="bonusPopup" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-[#12221A] border border-[#213F2C] w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl transform scale-100 transition-transform">
             <div class="w-14 h-14 rounded-full bg-socialGreen/20 text-socialGreen flex items-center justify-center text-2xl mx-auto mb-4 animate-bounce">
                 <i class="fa-solid fa-gift"></i>
@@ -281,6 +281,7 @@
         let userWalletBalance = 20000;
         let registeredPlanName = "Standard";
         let registeredPlanPrice = 15000;
+        let currentUsername = "";
 
         // Load User Data from localStorage (saved during registration/login)
         window.addEventListener('DOMContentLoaded', () => {
@@ -289,8 +290,9 @@
                 try {
                     const userData = JSON.parse(savedUser);
                     if (userData.username) {
-                        document.getElementById('displayUsername').innerText = "@" + userData.username;
-                        document.getElementById('userAvatar').innerText = userData.username.charAt(0).toUpperCase();
+                        currentUsername = userData.username;
+                        document.getElementById('displayUsername').innerText = "@" + currentUsername;
+                        document.getElementById('userAvatar').innerText = currentUsername.charAt(0).toUpperCase();
                     }
                     if (userData.membership) {
                         registeredPlanName = userData.membership.name; // "Standard" or "Premium"
@@ -302,6 +304,15 @@
                     }
                 } catch (e) {
                     console.error("Error parsing user data", e);
+                }
+            }
+
+            // Check if this specific user has already acknowledged their welcome bonus
+            if (currentUsername) {
+                const bonusAcknowledged = localStorage.getItem("bonusAcknowledged_" + currentUsername);
+                if (!bonusAcknowledged) {
+                    // Show popup only if not previously acknowledged
+                    document.getElementById('bonusPopup').classList.remove('hidden');
                 }
             }
 
@@ -356,8 +367,11 @@
             }
         }
 
-        // Close Welcome Bonus Popup
+        // Close Welcome Bonus Popup & Remember Acknowledgement
         function closeBonusPopup() {
+            if (currentUsername) {
+                localStorage.setItem("bonusAcknowledged_" + currentUsername, "true");
+            }
             document.getElementById('bonusPopup').classList.add('hidden');
         }
 
