@@ -334,22 +334,26 @@
                 // Highlight Premium / 30K Plan
                 cardPremium.className = "bg-[#12221A] border-2 border-socialGreen ring-2 ring-socialGreen/20 rounded-2xl p-4 sm:p-5 relative transition-all";
                 badgePremium.classList.remove('hidden');
-                btnPremium.className = "w-full bg-socialGreen text-black font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-emerald-400 transition-all shadow";
+                btnPremium.className = "w-full bg-[#1A3827] text-socialGreen font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-[#234D33] transition-all";
+                btnPremium.innerText = "Pay ₦30,000";
 
-                // Dim Standard / 15K Plan
+                // Dim Standard / 15K Plan (Allow changing back if clicked)
                 cardStandard.className = "bg-[#12221A] border-2 border-[#1F3827] rounded-2xl p-4 sm:p-5 relative transition-all";
                 badgeStandard.classList.add('hidden');
-                btnStandard.className = "w-full bg-[#1A3827] text-socialGreen font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-[#234D33] transition-all";
+                btnStandard.className = "w-full bg-socialGreen text-black font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-emerald-400 transition-all shadow";
+                btnStandard.innerHTML = 'Pay ₦15,000 <i class="fa-solid fa-arrow-right text-[10px]"></i>';
             } else {
                 // Highlight Standard / 15K Plan
                 cardStandard.className = "bg-[#12221A] border-2 border-socialGreen ring-2 ring-socialGreen/20 rounded-2xl p-4 sm:p-5 relative transition-all";
                 badgeStandard.classList.remove('hidden');
-                btnStandard.className = "w-full bg-socialGreen text-black font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-emerald-400 transition-all shadow";
+                btnStandard.className = "w-full bg-[#1A3827] text-socialGreen font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-[#234D33] transition-all";
+                btnStandard.innerText = "Pay ₦15,000";
 
-                // Dim Premium / 30K Plan
+                // Dim Premium / 30K Plan (Allow switching to 30K if clicked)
                 cardPremium.className = "bg-[#12221A] border-2 border-[#1F3827] rounded-2xl p-4 sm:p-5 relative transition-all";
                 badgePremium.classList.add('hidden');
-                btnPremium.className = "w-full bg-[#1A3827] text-socialGreen font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-[#234D33] transition-all";
+                btnPremium.className = "w-full bg-socialGreen text-black font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-emerald-400 transition-all shadow";
+                btnPremium.innerHTML = 'Pay ₦30,000 <i class="fa-solid fa-arrow-right text-[10px]"></i>';
             }
         });
 
