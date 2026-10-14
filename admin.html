@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialPay - Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        socialGreen: '#00FF88',
+                        socialDark: '#0B130E',
+                        socialCard: '#12221A',
+                        socialBorder: '#1F3827',
+                        darkHover: '#182C20'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B130E;
+            color: #FFFFFF;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0B130E; }
+        ::-webkit-scrollbar-thumb { background: #1F3827; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-socialGreen selection:text-black">
+
+    <!-- ADMIN LOGIN SECTION (Shown if not logged in) -->
+    <div id="adminLoginSection" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-[#12221A] border border-[#1F3827] rounded-3xl p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 rounded-2xl bg-socialGreen flex items-center justify-center text-black font-black text-2xl mx-auto mb-4 shadow-lg shadow-socialGreen/20">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold text-white mb-2">Admin Portal</h1>
+                <p class="text-xs text-zinc-400">Enter admin credentials to manage settings & users</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Admin Username</label>
+                    <input type="text" id="adminUser" required placeholder="admin" class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Password</label>
+                    <input type="password" id="adminPass" required placeholder="••••••••" class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+                </div>
+                <button type="submit" id="loginBtn" class="w-full bg-socialGreen text-black font-bold py-4 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/15 text-sm uppercase tracking-wider">
+                    Login to Admin Dashboard
+                </button>
+            </form>
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-xs text-zinc-500 hover:text-socialGreen transition-colors"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD SECTION (Hidden until authenticated) -->
+    <div id="adminDashboardSection" class="hidden min-h-screen flex flex-col justify-between">
+        
+        <!-- HEADER -->
+        <header class="w-full py-5 px-6 flex items-center justify-between max-w-4xl mx-auto border-b border-[#1F3827]/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-socialGreen flex items-center justify-center text-black font-black text-base shadow-md">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-white">Admin Control Center</h2>
+                    <p class="text-[10px] uppercase tracking-wider text-socialGreen font-semibold">SocialPay SS Management</p>
+                </div>
+            </div>
+            <button onclick="handleAdminLogout()" class="bg-[#12221A] border border-[#1F3827] text-red-400 hover:bg-red-500/10 text-xs font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+        </header>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="max-w-2xl w-full mx-auto px-4 py-8 space-y-6">
+
+            <!-- STATS OVERVIEW -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-[#12221A] border border-[#1F3827] rounded-2xl p-6 shadow-xl flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Total Registered Users</p>
+                        <h3 id="totalUsersCount" class="text-2xl font-black text-white mt-1">Loading...</h3>
+                    </div>
+                </div>
+
+                <div class="bg-[#12221A] border border-[#1F3827] rounded-2xl p-6 shadow-xl flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">System Status</p>
+                        <h3 class="text-xl font-bold text-socialGreen mt-1 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-socialGreen animate-pulse"></span> Active
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAYMENT & REDIRECTION SETTINGS FORM -->
+            <div class="bg-[#12221A] border border-[#1F3827] rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div class="flex items-center gap-3 border-b border-[#1F3827] pb-4">
+                    <div class="w-9 h-9 rounded-lg bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-gear"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Payment & Link Settings</h3>
+                        <p class="text-[11px] text-zinc-400">Update bank details and Telegram links instantly</p>
+                    </div>
+                </div>
+
+                <form onsubmit="saveAdminSettings(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Account Number</label>
+                            <input type="text" id="editAccountNumber" required class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-socialGreen">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Bank Name</label>
+                            <input type="text" id="editBankName" required class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-socialGreen">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Account Name</label>
+                        <input type="text" id="editAccountName" required class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-socialGreen">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Telegram Payment Link</label>
+                            <input type="url" id="editTelegramPayment" required class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-socialGreen">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Telegram Support Link</label>
+                            <input type="url" id="editTelegramSupport" required class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-socialGreen">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="saveSettingsBtn" class="w-full bg-socialGreen text-black font-bold py-4 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/15 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes to Firebase
+                    </button>
+                </form>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="w-full py-6 text-center text-xs text-zinc-500 border-t border-[#1F3827]/30">
+            &copy; 2026 SocialPay SS Admin Panel. All rights reserved.
+        </footer>
+    </div>
+
+    <!-- NOTIFICATION MODAL -->
+    <div id="adminModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#12221A] border border-[#213F2C] w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
+            <div id="adminModalIcon" class="w-12 h-12 rounded-full bg-emerald-500/20 text-socialGreen flex items-center justify-center text-xl mx-auto mb-4">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="adminModalTitle" class="text-lg font-bold text-white mb-2">Success</h3>
+            <p id="adminModalMessage" class="text-xs text-zinc-400 mb-6">Settings updated successfully!</p>
+            <button onclick="closeAdminModal()" class="w-full bg-socialGreen text-black font-bold py-3 rounded-xl text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all">Okay</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDKs & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration provided
+        const firebaseConfig = {
+            apiKey: "AIzaSyDzDjgSqldDD7DLomACfr95ZKpnCzq4_cE",
+            authDomain: "socialpay-morrish.firebaseapp.com",
+            projectId: "socialpay-morrish",
+            storageBucket: "socialpay-morrish.firebasestorage.app",
+            messagingSenderId: "736329222171",
+            appId: "1:736329222171:web:d122b49971db82c93490be",
+            measurementId: "G-VSVFVJKS3M"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Check if admin is already logged in
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (localStorage.getItem("socialPayAdminLoggedIn") === "true") {
+                showDashboardView();
+                await loadAdminData();
+            }
+        });
+
+        // Admin Login Handler
+        window.handleAdminLogin = async function(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value;
+
+            // Default admin credentials or check Firestore
+            if (user === "admin" && pass === "admin123") {
+                localStorage.setItem("socialPayAdminLoggedIn", "true");
+                showDashboardView();
+                await loadAdminData();
+            } else {
+                // Check if custom admin credentials exist in Firestore
+                try {
+                    const adminRef = doc(db, "settings", "adminAuth");
+                    const adminSnap = await getDoc(adminRef);
+                    if (adminSnap.exists() && adminSnap.data().username === user && adminSnap.data().password === pass) {
+                        localStorage.setItem("socialPayAdminLoggedIn", "true");
+                        showDashboardView();
+                        await loadAdminData();
+                        return;
+                    }
+                } catch(err) {}
+
+                showAdminModal("Login Failed", "Invalid admin username or password.", true);
+            }
+        };
+
+        window.handleAdminLogout = function() {
+            localStorage.removeItem("socialPayAdminLoggedIn");
+            document.getElementById('adminDashboardSection').classList.add('hidden');
+            document.getElementById('adminLoginSection').classList.remove('hidden');
+        };
+
+        function showDashboardView() {
+            document.getElementById('adminLoginSection').classList.add('hidden');
+            document.getElementById('adminDashboardSection').classList.remove('hidden');
+        }
+
+        // Load Users count and Payment settings from Firebase
+        async function loadAdminData() {
+            try {
+                // Fetch Total Users Count
+                const usersSnapshot = await getDocs(collection(db, "users"));
+                document.getElementById('totalUsersCount').innerText = usersSnapshot.size.toLocaleString();
+
+                // Fetch Payment Settings
+                const paymentRef = doc(db, "settings", "payment");
+                const paymentSnap = await getDoc(paymentRef);
+
+                if (paymentSnap.exists()) {
+                    const data = paymentSnap.data();
+                    if (data.accountNumber) document.getElementById('editAccountNumber').value = data.accountNumber;
+                    if (data.bankName) document.getElementById('editBankName').value = data.bankName;
+                    if (data.accountName) document.getElementById('editAccountName').value = data.accountName;
+                    if (data.telegramPaymentLink) document.getElementById('editTelegramPayment').value = data.telegramPaymentLink;
+                    if (data.telegramSupportLink) document.getElementById('editTelegramSupport').value = data.telegramSupportLink;
+                } else {
+                    // Set defaults if not present
+                    await setDoc(paymentRef, {
+                        accountNumber: "3004456598",
+                        bankName: "Kuda Bank",
+                        accountName: "Globwest Enterprise - Paramountttt",
+                        telegramPaymentLink: "https://t.me/",
+                        telegramSupportLink: "https://t.me/"
+                    });
+                }
+            } catch (error) {
+                console.error("Error loading admin data:", error);
+            }
+        }
+
+        // Save Admin Settings to Firebase
+        window.saveAdminSettings = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('saveSettingsBtn');
+            btn.disabled = true;
+            btn.innerText = "Saving to Firebase...";
+
+            const accountNumber = document.getElementById('editAccountNumber').value.trim();
+            const bankName = document.getElementById('editBankName').value.trim();
+            const accountName = document.getElementById('editAccountName').value.trim();
+            const telegramPaymentLink = document.getElementById('editTelegramPayment').value.trim();
+            const telegramSupportLink = document.getElementById('editTelegramSupport').value.trim();
+
+            try {
+                const paymentRef = doc(db, "settings", "payment");
+                await setDoc(paymentRef, {
+                    accountNumber,
+                    bankName,
+                    accountName,
+                    telegramPaymentLink,
+                    telegramSupportLink
+                }, { merge: true });
+
+                showAdminModal("Saved Successfully", "Bank details and Telegram links have been updated successfully in Firebase!", false);
+            } catch (error) {
+                console.error("Error saving settings:", error);
+                showAdminModal("Error", "Failed to save settings to Firebase. Please check your connection.", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes to Firebase';
+            }
+        };
+
+        window.showAdminModal = function(title, message, isError = false) {
+            const modal = document.getElementById('adminModal');
+            document.getElementById('adminModalTitle').innerText = title;
+            document.getElementById('adminModalMessage').innerText = message;
+            const icon = document.getElementById('adminModalIcon');
+
+            if (isError) {
+                icon.className = "w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl mx-auto mb-4";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                icon.className = "w-12 h-12 rounded-full bg-emerald-500/20 text-socialGreen flex items-center justify-center text-xl mx-auto mb-4";
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }
+            modal.classList.remove('hidden');
+        };
+
+        window.closeAdminModal = function() {
+            document.getElementById('adminModal').classList.add('hidden');
+        };
+    </script>
+</body>
+</html>
