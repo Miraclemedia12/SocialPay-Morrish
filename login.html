@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialPay - Sign In</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        socialGreen: '#00FF88',
+                        socialDark: '#0B130E',
+                        socialCard: '#12221A',
+                        socialBorder: '#1F3827',
+                        darkHover: '#182C20'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B130E;
+            color: #FFFFFF;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0B130E; }
+        ::-webkit-scrollbar-thumb { background: #1F3827; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-socialGreen selection:text-black">
+
+    <!-- HEADER -->
+    <header class="w-full py-6 px-6 flex items-center justify-between max-w-4xl mx-auto">
+        <a href="index.html" class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-socialGreen flex items-center justify-center text-black font-black text-lg shadow-lg shadow-socialGreen/20">
+                SS
+            </div>
+            <span class="text-lg font-bold tracking-tight text-white">SocialPay SS</span>
+        </a>
+        <a href="register.html" class="text-xs font-semibold text-socialGreen hover:underline">Create Account</a>
+    </header>
+
+    <!-- MAIN LOGIN CONTAINER -->
+    <main class="max-w-md w-full mx-auto px-4 py-12">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Welcome Back!</h1>
+            <p class="text-zinc-400 text-xs sm:text-sm">Sign in to manage your earnings and daily tasks.</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+            <!-- EMAIL OR USERNAME -->
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Email or Username</label>
+                <input type="text" id="loginIdentifier" required placeholder="Enter email or username" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+            </div>
+
+            <!-- PASSWORD -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Password</label>
+                    <a href="#" onclick="showModal('Forgot Password', 'Please contact support or register a new account if you forgot your credentials.', true)" class="text-xs text-socialGreen hover:underline">Forgot password?</a>
+                </div>
+                <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-[#12221A] border border-[#1F3827] rounded-xl px-4 py-3.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen transition-colors">
+            </div>
+
+            <!-- SIGN IN BUTTON -->
+            <button type="submit" id="loginBtn" class="w-full bg-socialGreen text-black font-bold py-4 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/15 flex items-center justify-center gap-2 text-base">
+                Sign In <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+
+            <!-- FOOTER REGISTER LINK -->
+            <p class="text-center text-xs text-zinc-400 pt-4">
+                Don't have an account? <a href="register.html" class="text-socialGreen font-bold hover:underline">Create Account</a>
+            </p>
+        </form>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full py-6 text-center text-xs text-zinc-500">
+        &copy; 2026 SocialPay SS. All rights reserved.
+    </footer>
+
+    <!-- CUSTOM UNIQUE POPUP MODAL FOR ERRORS & SUCCESS -->
+    <div id="customModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#12221A] border border-[#213F2C] w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl">
+            <div id="modalIcon" class="w-12 h-12 rounded-full bg-emerald-500/20 text-socialGreen flex items-center justify-center text-xl mx-auto mb-4">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="modalTitle" class="text-lg font-bold text-white mb-2">Success</h3>
+            <p id="modalMessage" class="text-xs text-zinc-400 mb-6">Login successful!</p>
+            <button onclick="closeModal()" class="w-full bg-socialGreen text-black font-bold py-3 rounded-xl text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all">Okay</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration provided
+        const firebaseConfig = {
+            apiKey: "AIzaSyDzDjgSqldDD7DLomACfr95ZKpnCzq4_cE",
+            authDomain: "socialpay-morrish.firebaseapp.com",
+            projectId: "socialpay-morrish",
+            storageBucket: "socialpay-morrish.firebasestorage.app",
+            messagingSenderId: "736329222171",
+            appId: "1:736329222171:web:d122b49971db82c93490be",
+            measurementId: "G-VSVFVJKS3M"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.showModal = function(title, message, isError = false, callback = null) {
+            const modal = document.getElementById('customModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+
+            modalTitle.innerText = title;
+            modalMessage.innerText = message;
+
+            if (isError) {
+                modalIcon.className = "w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl mx-auto mb-4";
+                modalIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                modalIcon.className = "w-12 h-12 rounded-full bg-emerald-500/20 text-socialGreen flex items-center justify-center text-xl mx-auto mb-4";
+                modalIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }
+
+            modal.classList.remove('hidden');
+            window.modalCallback = callback;
+        };
+
+        window.closeModal = function() {
+            document.getElementById('customModal').classList.add('hidden');
+            if (typeof window.modalCallback === 'function') {
+                window.modalCallback();
+            }
+        };
+
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.innerText = "Signing In...";
+
+            const identifier = document.getElementById('loginIdentifier').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                let userData = null;
+
+                // Try fetching directly if identifier is username
+                const userRef = doc(db, "users", identifier);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    userData = userSnap.data();
+                } else {
+                    // Otherwise search by email in Firestore
+                    const usersRef = collection(db, "users");
+                    const q = query(usersRef, where("email", "==", identifier));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        userData = querySnapshot.docs[0].data();
+                    }
+                }
+
+                if (!userData) {
+                    showModal("Account Not Found", "No account found with that username or email address. Please check your details or register.", true);
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "Sign In";
+                    return;
+                }
+
+                if (userData.password !== password) {
+                    showModal("Incorrect Password", "The password you entered is incorrect. Please check your password and try again.", true);
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "Sign In";
+                    return;
+                }
+
+                // Successful Login - Store session in localStorage
+                localStorage.setItem("socialPayUser", JSON.stringify(userData));
+
+                showModal("Login Successful", "Welcome back, " + userData.firstName + "! Redirecting to your dashboard...", false, () => {
+                    window.location.href = "dashboard.html"; // Next step redirect
+                });
+
+            } catch (error) {
+                console.error("Firebase Login Error:", error);
+                showModal("Connection Error", "Failed to connect to Firebase. Please check your connection.", true);
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Sign In";
+            }
+        };
+    </script>
+</body>
+</html>
