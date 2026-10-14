@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialPay - Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        socialGreen: '#00FF88',
+                        socialDark: '#0B130E',
+                        socialCard: '#12221A',
+                        socialBorder: '#1F3827',
+                        darkHover: '#182C20'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B130E;
+            color: #FFFFFF;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0B130E; }
+        ::-webkit-scrollbar-thumb { background: #1F3827; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-socialGreen selection:text-black pb-24">
+
+    <!-- WELCOME BONUS POPUP (Triggers automatically on entry) -->
+    <div id="bonusPopup" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#12221A] border border-[#213F2C] w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl transform scale-100 transition-transform">
+            <div class="w-14 h-14 rounded-full bg-socialGreen/20 text-socialGreen flex items-center justify-center text-2xl mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-gift"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Bonus Credited!</h3>
+            <p id="popupBonusText" class="text-xs text-zinc-300 mb-6 leading-relaxed">Your welcome bonus has been successfully credited to your main balance wallet.</p>
+            <button onclick="closeBonusPopup()" class="w-full bg-socialGreen text-black font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/20">
+                Continue to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER / TOP NAV -->
+    <header class="w-full py-4 px-4 sm:px-6 flex items-center justify-between max-w-4xl mx-auto border-b border-[#1F3827]/50">
+        <div class="flex items-center gap-3">
+            <div id="userAvatar" class="w-10 h-10 rounded-full bg-socialGreen text-black font-black flex items-center justify-center text-base shadow-md">
+                V
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Welcome Back (1K+ RUN)</p>
+                <h4 id="displayUsername" class="text-sm font-bold text-white">@vestilyn_social</h4>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="window.location.href='payment.html'" class="w-9 h-9 rounded-xl bg-[#12221A] border border-[#1F3827] flex items-center justify-center text-socialGreen hover:bg-[#182C20] transition-colors">
+                <i class="fa-regular fa-bell text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-xl w-full mx-auto px-4 py-6 space-y-6">
+
+        <!-- MAIN BALANCE CARD -->
+        <div class="bg-[#12221A] border border-[#1F3827] rounded-2xl p-6 relative shadow-xl overflow-hidden">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Main Balance</span>
+                <button onclick="window.location.href='payment.html'" class="bg-socialGreen text-black text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-400 transition-all shadow">
+                    +Add Funds
+                </button>
+            </div>
+            <div class="flex items-center gap-4 mb-6">
+                <h2 id="displayBalance" class="text-3xl sm:text-4xl font-black text-white">₦20,000</h2>
+                <button onclick="toggleBalanceVisibility()" class="text-zinc-400 hover:text-white text-sm">
+                    <i id="eyeIcon" class="fa-regular fa-eye-slash"></i>
+                </button>
+            </div>
+            <button onclick="redirectToPayment('Standard', 15000)" class="w-full bg-[#1A3827] border border-[#234D33] text-socialGreen font-bold py-3 rounded-xl text-xs uppercase tracking-wider hover:bg-[#234D33] transition-all flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-socialGreen animate-ping"></span>
+                Activate Plan (₦15,000)
+            </button>
+        </div>
+
+        <!-- YOUR ACTIVATION PACKAGE -->
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-socialGreen"></i> Your Activation Package
+                </h3>
+                <span class="bg-[#1A3827] text-socialGreen border border-[#234D33] text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">Strictly Saved</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                <!-- Standard Package Card -->
+                <div class="bg-[#12221A] border-2 border-socialGreen ring-2 ring-socialGreen/20 rounded-2xl p-4 sm:p-5 relative">
+                    <div class="absolute -top-3 left-3 bg-socialGreen text-black text-[8px] sm:text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shadow">Selected</div>
+                    <div class="text-[10px] sm:text-xs font-bold uppercase text-zinc-400 tracking-wider mb-1 mt-1">Standard</div>
+                    <div class="text-lg sm:text-xl font-extrabold text-white mb-2">15k Package</div>
+                    <div class="text-[10px] text-zinc-400 mb-3">₦15,000 NGN</div>
+                    <button onclick="redirectToPayment('Standard', 15000)" class="w-full bg-socialGreen text-black font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-emerald-400 transition-all shadow">
+                        Pay ₦15,000 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Pro VIP / Premium Package Card -->
+                <div class="bg-[#12221A] border-2 border-[#1F3827] rounded-2xl p-4 sm:p-5 relative hover:border-socialGreen/40 transition-colors">
+                    <div class="absolute -top-3 right-3 bg-[#1A3827] text-socialGreen border border-[#234D33] text-[8px] sm:text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">Pro VIP</div>
+                    <div class="text-[10px] sm:text-xs font-bold uppercase text-zinc-400 tracking-wider mb-1 mt-1">Premium</div>
+                    <div class="text-lg sm:text-xl font-extrabold text-white mb-2">30k Package</div>
+                    <div class="text-[10px] text-zinc-400 mb-3">₦30,000 NGN</div>
+                    <button onclick="redirectToPayment('Premium', 30000)" class="w-full bg-[#1A3827] border border-[#234D33] text-socialGreen font-bold py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs hover:bg-[#234D33] transition-all">
+                        Pay ₦30,000 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCOUNT ACTIVATION STATUS -->
+        <div class="bg-[#12221A] border border-[#1F3827] rounded-2xl p-5 shadow-lg">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wide">Account Activation Status</h4>
+                        <p class="text-[11px] text-zinc-400">Complete payment to activate package</p>
+                    </div>
+                </div>
+                <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">Pending Payment</span>
+            </div>
+            
+            <div class="w-full bg-[#0B130E] rounded-full h-2 mb-3 overflow-hidden border border-[#1F3827]">
+                <div class="bg-socialGreen h-full rounded-full w-1/2"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs mb-4">
+                <span class="text-socialGreen font-bold">50% Registered (15K Plan)</span>
+                <span class="text-zinc-400">Step 1 of 2</span>
+            </div>
+
+            <button onclick="redirectToPayment('Standard', 15000)" class="w-full bg-socialGreen text-black font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/20 flex items-center justify-center gap-2">
+                Proceed to Pay ₦15,000 <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Quick Actions</h3>
+                <a href="payment.html" class="text-xs text-socialGreen hover:underline font-semibold">Activity History <i class="fa-solid fa-chevron-right text-[9px]"></i></a>
+            </div>
+
+            <div class="grid grid-cols-4 gap-3">
+                <!-- Action 1: Jobs -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Jobs</span>
+                </button>
+
+                <!-- Action 2: Sponsored -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Sponsored</span>
+                </button>
+
+                <!-- Action 3: Status -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-signal"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Status</span>
+                </button>
+
+                <!-- Action 4: Meta AI -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Meta AI</span>
+                </button>
+
+                <!-- Action 5: Data -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-wifi"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Data</span>
+                </button>
+
+                <!-- Action 6: Chat -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Chat</span>
+                </button>
+
+                <!-- Action 7: Broadcast -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Broadcast</span>
+                </button>
+
+                <!-- Action 8: Upgrade -->
+                <button onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-[#1A3827] text-socialGreen flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-zinc-300">Upgrade</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TOP WEEKLY EARNERS BANNER -->
+        <div onclick="window.location.href='payment.html'" class="bg-[#12221A] border border-[#1F3827] hover:border-socialGreen/50 p-4 rounded-2xl flex items-center justify-between cursor-pointer transition-all">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-socialGreen text-black flex items-center justify-center text-base font-bold shadow">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-white">Top Weekly Earners</h4>
+                    <p class="text-[11px] text-zinc-400">See who is leading the payout charts</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-zinc-400 text-xs"></i>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#0B130E]/95 backdrop-blur-md border-t border-[#1F3827] py-3 px-6">
+        <div class="max-w-md mx-auto flex items-center justify-between text-zinc-400">
+            <!-- Chat -->
+            <button onclick="window.location.href='payment.html'" class="flex flex-col items-center gap-1 hover:text-socialGreen transition-colors">
+                <i class="fa-regular fa-comment text-lg"></i>
+                <span class="text-[10px]">Chat</span>
+            </button>
+            <!-- Friends -->
+            <button onclick="window.location.href='payment.html'" class="flex flex-col items-center gap-1 hover:text-socialGreen transition-colors">
+                <i class="fa-solid fa-user-group text-lg"></i>
+                <span class="text-[10px]">Friends</span>
+            </button>
+            <!-- Home (Active) -->
+            <button onclick="window.location.href='dashboard.html'" class="flex flex-col items-center gap-1 text-black bg-socialGreen p-2.5 rounded-full shadow-lg shadow-socialGreen/20 -mt-6">
+                <i class="fa-solid fa-house text-base"></i>
+            </button>
+            <!-- Ads -->
+            <button onclick="window.location.href='payment.html'" class="flex flex-col items-center gap-1 hover:text-socialGreen transition-colors">
+                <i class="fa-solid fa-bullhorn text-lg"></i>
+                <span class="text-[10px]">Ads</span>
+            </button>
+            <!-- Logout -->
+            <button onclick="handleLogout()" class="flex flex-col items-center gap-1 hover:text-red-400 transition-colors">
+                <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+                <span class="text-[10px]">Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let isBalanceVisible = true;
+        let userWalletBalance = 20000;
+
+        // Load User Data from localStorage (saved during login/registration)
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem("socialPayUser");
+            if (savedUser) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    if (userData.username) {
+                        document.getElementById('displayUsername').innerText = "@" + userData.username;
+                        document.getElementById('userAvatar').innerText = userData.username.charAt(0).toUpperCase();
+                    }
+                    if (userData.walletBalance) {
+                        userWalletBalance = userData.walletBalance;
+                        document.getElementById('displayBalance').innerText = "₦" + userWalletBalance.toLocaleString();
+                        document.getElementById('popupBonusText').innerText = `Your welcome bonus of ₦${userWalletBalance.toLocaleString()} has been successfully credited to your main balance wallet.`;
+                    }
+                } catch (e) {
+                    console.error("Error parsing user data", e);
+                }
+            }
+        });
+
+        // Toggle Balance Visibility
+        function toggleBalanceVisibility() {
+            isBalanceVisible = !isBalanceVisible;
+            const balanceEl = document.getElementById('displayBalance');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (isBalanceVisible) {
+                balanceEl.innerText = "₦" + userWalletBalance.toLocaleString();
+                eyeIcon.className = "fa-regular fa-eye-slash";
+            } else {
+                balanceEl.innerText = "₦••••••";
+                eyeIcon.className = "fa-regular fa-eye";
+            }
+        }
+
+        // Close Welcome Bonus Popup
+        function closeBonusPopup() {
+            document.getElementById('bonusPopup').classList.add('hidden');
+        }
+
+        // Redirect to Payment with Plan details
+        function redirectToPayment(planName, amount) {
+            localStorage.setItem("selectedPlan", JSON.stringify({ name: planName, amount: amount }));
+            window.location.href = "payment.html?plan=" + planName.toLowerCase() + "&amount=" + amount;
+        }
+
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem("socialPayUser");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
