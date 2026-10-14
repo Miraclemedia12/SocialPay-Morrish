@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialPay - Next-Gen Earning Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        socialGreen: '#00FF88',
+                        socialDark: '#0B130E',
+                        socialCard: '#132219',
+                        socialBorder: '#1F3827',
+                        darkHover: '#182C20'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B130E;
+            color: #FFFFFF;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0B130E; }
+        ::-webkit-scrollbar-thumb { background: #1F3827; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00FF88; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-socialGreen selection:text-black">
+
+    <!-- FLOATING LIVE WITHDRAWAL POPUP -->
+    <div id="livePopup" class="fixed top-24 left-6 z-50 transition-all duration-500 transform -translate-x-96 opacity-0 bg-[#12221A] border border-[#213F2C] shadow-2xl rounded-xl p-3 flex items-center gap-3.5 max-w-xs">
+        <div class="w-9 h-9 rounded-full bg-[#1A3827] flex items-center justify-center text-socialGreen shrink-0">
+            <i class="fa-solid fa-arrow-trend-up text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+            <h4 id="popupName" class="text-xs font-bold text-white truncate">Olumide Bamidele</h4>
+            <p id="popupDetails" class="text-[11px] text-zinc-400 truncate">Withdrew ₦17,000 to OPay</p>
+        </div>
+        <span class="bg-[#183623] text-socialGreen text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-[#234D33]">Find Live</span>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-[#0B130E]/90 backdrop-blur-md border-b border-[#1A2E20]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-socialGreen flex items-center justify-center text-black font-black text-xl shadow-lg shadow-socialGreen/20">
+                    SS
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">SocialPay</span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
+                <a href="#features" class="hover:text-socialGreen transition-colors">Features</a>
+                <a href="#howitworks" class="hover:text-socialGreen transition-colors">How It Works</a>
+                <a href="#payouts" class="hover:text-socialGreen transition-colors flex items-center gap-1.5">
+                    Live Payouts <span class="bg-socialGreen text-black text-[10px] font-bold px-1.5 py-0.2 rounded">1,000+</span>
+                </a>
+                <a href="#faq" class="hover:text-socialGreen transition-colors">FAQ</a>
+            </nav>
+
+            <!-- Auth Buttons -->
+            <div class="hidden md:flex items-center gap-4">
+                <button onclick="openAuthModal('Sign In')" class="text-sm font-semibold text-white hover:text-socialGreen transition-colors px-3 py-2">Sign In</button>
+                <button onclick="openAuthModal('Get Started')" class="bg-socialGreen text-black text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/10">Get Started</button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menuBtn" class="md:hidden text-zinc-300 hover:text-white text-xl p-2">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden bg-[#12221A] border-b border-[#1F3827] px-6 py-5 space-y-4">
+            <a href="#features" class="block text-zinc-300 hover:text-socialGreen font-medium">Features</a>
+            <a href="#howitworks" class="block text-zinc-300 hover:text-socialGreen font-medium">How It Works</a>
+            <a href="#payouts" class="block text-zinc-300 hover:text-socialGreen font-medium">Live Payouts (1,000+)</a>
+            <a href="#faq" class="block text-zinc-300 hover:text-socialGreen font-medium">FAQ</a>
+            <div class="pt-4 border-t border-[#1F3827] flex gap-3">
+                <button onclick="openAuthModal('Sign In')" class="flex-1 bg-[#1A3827] text-white py-2.5 rounded-xl font-semibold text-sm">Sign In</button>
+                <button onclick="openAuthModal('Get Started')" class="flex-1 bg-socialGreen text-black py-2.5 rounded-xl font-bold text-sm">Get Started</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="pt-16 pb-12 px-4 sm:px-6 lg:px-8 text-center max-w-5xl mx-auto">
+        <!-- Next-Gen Badge -->
+        <div class="inline-flex items-center gap-2 bg-[#12221A] border border-[#213F2C] px-4 py-1.5 rounded-full text-socialGreen text-xs font-semibold mb-8 shadow-inner">
+            <span class="w-2 h-2 rounded-full bg-socialGreen animate-ping"></span>
+            Next-Gen Social Earning Platform
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+            Monetize Every Click & <br class="hidden sm:inline">
+            <span class="text-socialGreen">Social Task Instantly.</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+            Complete micro-tasks, engage on social media campaigns, invite friends, and cash out straight to any Nigerian bank account or OPay wallet with automated ultra-fast speed.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <button onclick="openAuthModal('Get Started')" class="w-full sm:w-auto bg-socialGreen text-black font-bold px-8 py-4 rounded-xl hover:bg-emerald-400 transition-all shadow-xl shadow-socialGreen/20 flex items-center justify-center gap-2 text-base">
+                Start Earning Free Now <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+            <a href="#payouts" class="w-full sm:w-auto bg-[#12221A] border border-[#213F2C] text-white font-semibold px-8 py-4 rounded-xl hover:bg-[#182C20] transition-all flex items-center justify-center gap-2 text-base">
+                <i class="fa-solid fa-circle-check text-socialGreen"></i> View Live Payouts
+            </a>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto bg-[#12221A]/60 border border-[#1F3827] p-6 rounded-2xl backdrop-blur-sm">
+            <div class="p-2">
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-1">85K+</h3>
+                <p class="text-xs uppercase tracking-wider text-zinc-400 font-semibold">Active Users</p>
+            </div>
+            <div class="p-2 border-t sm:border-t-0 sm:border-x border-[#1F3827]">
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-socialGreen mb-1">₦48M+</h3>
+                <p class="text-xs uppercase tracking-wider text-zinc-400 font-semibold">Paid Out</p>
+            </div>
+            <div class="p-2 border-t sm:border-t-0 border-[#1F3827]">
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-1">&lt; 1 MIN</h3>
+                <p class="text-xs uppercase tracking-wider text-zinc-400 font-semibold">Payout Speed</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section id="features" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="text-center mb-16">
+            <span class="text-socialGreen text-xs font-bold uppercase tracking-widest block mb-3">Why Choose Us</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Built for Speed, Security & Earnings</h2>
+            <p class="text-zinc-400 text-sm sm:text-base mt-2">Everything you need to turn your spare time and social media activity into real cash.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-[#12221A] border border-[#1F3827] p-8 rounded-2xl hover:border-socialGreen/50 transition-all group">
+                <div class="w-14 h-14 rounded-xl bg-[#1A3827] flex items-center justify-center text-socialGreen text-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Simple Social Tasks</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Perform quick actions like for liking pages, liking posts, commenting, or sharing sponsored content to earn instant rewards.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-[#12221A] border border-[#1F3827] p-8 rounded-2xl hover:border-socialGreen/50 transition-all group">
+                <div class="w-14 h-14 rounded-xl bg-[#1A3827] flex items-center justify-center text-socialGreen text-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Instant Bank Payouts</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Request withdrawals anytime and receive funds directly in your OPay, Moniepoint, or local bank account within minutes.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-[#12221A] border border-[#1F3827] p-8 rounded-2xl hover:border-socialGreen/50 transition-all group">
+                <div class="w-14 h-14 rounded-xl bg-[#1A3827] flex items-center justify-center text-socialGreen text-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Lucrative Referral Bonus</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Invite your friends and colleagues using your referral link and earn wonderful bonuses for every active member you bring.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="howitworks" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-[#162D1F]">
+        <div class="text-center mb-16">
+            <span class="text-socialGreen text-xs font-bold uppercase tracking-widest block mb-3">Step-by-Step</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">How SocialPay SS Works</h2>
+            <p class="text-zinc-400 text-sm sm:text-base mt-2">Get started and earn your first payout in 3 easy steps.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="bg-[#12221A]/50 border border-[#1F3827] p-8 rounded-2xl relative">
+                <div class="w-10 h-10 rounded-full bg-socialGreen text-black font-extrabold flex items-center justify-center mb-6 text-lg shadow-md">1</div>
+                <h3 class="text-xl font-bold text-white mb-3">Create an Account</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Sign up with your details in less than a minute and activate your dashboard access instantly.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-[#12221A]/50 border border-[#1F3827] p-8 rounded-2xl relative">
+                <div class="w-10 h-10 rounded-full bg-socialGreen text-black font-extrabold flex items-center justify-center mb-6 text-lg shadow-md">2</div>
+                <h3 class="text-xl font-bold text-white mb-3">Perform Tasks</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Browse through available social engagements or micro-tasks, complete them properly, and submit proof.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-[#12221A]/50 border border-[#1F3827] p-8 rounded-2xl relative">
+                <div class="w-10 h-10 rounded-full bg-socialGreen text-black font-extrabold flex items-center justify-center mb-6 text-lg shadow-md">3</div>
+                <h3 class="text-xl font-bold text-white mb-3">Cash Out Instantly</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">Watch your wallet balance grow and withdraw your money directly into your bank account.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- REAL-TIME LEDGER (1,000+ RECORDS) -->
+    <section id="payouts" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-[#162D1F]">
+        <div class="text-center mb-12">
+            <span class="text-socialGreen text-xs font-bold uppercase tracking-widest block mb-3">Real-Time Ledger</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Live Withdrawal Feed (1,000+ Records)</h2>
+            <p class="text-zinc-400 text-sm sm:text-base mt-2">Browse recent payouts sent accurately to OPay, Moniepoint, and commercial bank accounts.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-xl mx-auto mb-8 relative">
+            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+            <input type="text" id="ledgerSearch" placeholder="Search by name, bank, or amount..." class="w-full bg-[#12221A] border border-[#213F2C] rounded-xl px-12 py-3.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-socialGreen transition-colors shadow-inner">
+        </div>
+
+        <!-- Table Container -->
+        <div class="bg-[#12221A] border border-[#1F3827] rounded-2xl overflow-hidden shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-[#1F3827] text-zinc-400 text-xs uppercase tracking-wider bg-[#162D1F]/50">
+                            <th class="py-4 px-6">#ID</th>
+                            <th class="py-4 px-6">Member Name</th>
+                            <th class="py-4 px-6">Amount</th>
+                            <th class="py-4 px-6">Destination Bank</th>
+                            <th class="py-4 px-6 text-right">Time Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerBody" class="divide-y divide-[#182C20] text-sm text-zinc-200">
+                        <!-- Populated dynamically via JavaScript to support all 1,000 records smoothly -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Footer -->
+            <div class="p-5 border-t border-[#1F3827] flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#12221A]">
+                <p id="paginationInfo" class="text-xs text-zinc-400 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-socialGreen"></i> Showing 1,000 verified automated withdrawal logs.
+                </p>
+                <div class="flex items-center gap-2">
+                    <button id="prevBtn" onclick="changePage(-1)" class="bg-[#1A3827] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#234D33] transition-colors disabled:opacity-40">Previous</button>
+                    <span id="pageIndicator" class="text-xs text-zinc-300 px-2 font-semibold">Page 1 of 50</span>
+                    <button id="nextBtn" onclick="changePage(1)" class="bg-[#1A3827] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#234D33] transition-colors">Next</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq" class="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full border-t border-[#162D1F]">
+        <div class="text-center mb-16">
+            <span class="text-socialGreen text-xs font-bold uppercase tracking-widest block mb-3">Got Questions?</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Frequently Asked Questions</h2>
+            <p class="text-zinc-400 text-sm sm:text-base mt-2">Find clear answers to common questions about earning and payouts.</p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- FAQ 1 -->
+            <div class="bg-[#12221A] border border-[#1F3827] rounded-xl overflow-hidden transition-all">
+                <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-white flex justify-between items-center gap-4 hover:text-socialGreen">
+                    <span>What is SocialPay SS?</span>
+                    <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-zinc-400 text-sm leading-relaxed border-t border-[#182C20] pt-4">
+                    SocialPay SS is a reliable web platform that connects social media advertisers who need engagement with real users who want to earn money by performing micro social tasks.
+                </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="bg-[#12221A] border border-[#1F3827] rounded-xl overflow-hidden transition-all">
+                <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-white flex justify-between items-center gap-4 hover:text-socialGreen">
+                    <span>How do I get paid?</span>
+                    <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-zinc-400 text-sm leading-relaxed border-t border-[#182C20] pt-4">
+                    Once you accumulate your earnings in your dashboard wallet, you can place a withdrawal request. Payouts are processed directly into your registered Nigerian bank account or OPay wallet.
+                </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="bg-[#12221A] border border-[#1F3827] rounded-xl overflow-hidden transition-all">
+                <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-white flex justify-between items-center gap-4 hover:text-socialGreen">
+                    <span>Are there any requirements to start earning?</span>
+                    <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-zinc-400 text-sm leading-relaxed border-t border-[#182C20] pt-4">
+                    All you need is a smartphone or computer, an active internet connection, and your social media accounts (such as WhatsApp, TikTok, Instagram, or Twitter/X) to complete tasks.
+                </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="bg-[#12221A] border border-[#1F3827] rounded-xl overflow-hidden transition-all">
+                <button onclick="toggleFaq(this)" class="w-full p-6 text-left font-bold text-white flex justify-between items-center gap-4 hover:text-socialGreen">
+                    <span>How do referral earnings work?</span>
+                    <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-zinc-400 text-sm leading-relaxed border-t border-[#182C20] pt-4">
+                    When you share your unique referral link with friends and they sign up and activate their accounts, a commission is automatically credited to your referral balance.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-[#162D1F] py-8 text-center text-xs text-zinc-500">
+        <p>&copy; 2026 SocialPay SS. All rights reserved.</p>
+    </footer>
+
+    <!-- AUTH MODAL (Sign In / Get Started) -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#12221A] border border-[#213F2C] w-full max-w-md rounded-2xl p-8 relative shadow-2xl">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-8">
+                <div class="w-12 h-12 rounded-xl bg-socialGreen flex items-center justify-center text-black font-black text-2xl mx-auto mb-4 shadow-lg shadow-socialGreen/20">
+                    SS
+                </div>
+                <h3 id="modalTitle" class="text-2xl font-bold text-white">Welcome to SocialPay</h3>
+                <p class="text-xs text-zinc-400 mt-1">Enter your details to access your dashboard</p>
+            </div>
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-300 mb-2">Email Address or Phone</label>
+                    <input type="text" required placeholder="e.g., user@gmail.com" class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-300 mb-2">Password</label>
+                    <input type="password" required placeholder="••••••••" class="w-full bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-socialGreen">
+                </div>
+                <button type="submit" class="w-full bg-socialGreen text-black font-bold py-3.5 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-socialGreen/10 mt-2">
+                    Continue to Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // FAQ Accordion Toggle
+        function toggleFaq(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('fa-chevron-down');
+            
+            // Close other FAQs
+            document.querySelectorAll('.faq-content').forEach(item => {
+                if (item !== content) item.classList.add('hidden');
+            });
+
+            content.classList.toggle('hidden');
+        }
+
+        // Auth Modal Handlers
+        function openAuthModal(type) {
+            document.getElementById('modalTitle').innerText = type === 'Sign In' ? 'Welcome Back' : 'Create Your Account';
+            document.getElementById('authModal').classList.remove('hidden');
+            mobileMenu.classList.add('hidden');
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            alert('Successfully connected! Redirecting to secure dashboard...');
+            closeAuthModal();
+        }
+
+        // Live Withdrawal Popup Rotation
+        const popupData = [
+            { name: "Olumide Bamidele", amount: "₦17,000", bank: "OPay" },
+            { name: "Fatima Ibrahim", amount: "₦114,000", bank: "Moniepoint" },
+            { name: "Chinedu Eze", amount: "₦134,000", bank: "PalmPay" },
+            { name: "Aninu Bello", amount: "₦29,000", bank: "OPay" },
+            { name: "Emeka Okafor", amount: "₦118,000", bank: "Moniepoint" },
+            { name: "Grace Lawal", amount: "₦46,000", bank: "OPay" },
+            { name: "Moses Nwachukwu", amount: "₦48,000", bank: "PalmPay" },
+            { name: "Funmilayo Audu", amount: "₦13,000", bank: "UBA" },
+            { name: "Amina Adeyemi", amount: "₦34,000", bank: "OPay" },
+            { name: "Esther Zagi", amount: "₦47,000", bank: "OPay" },
+            { name: "Segun Mohammed", amount: "₦8,000", bank: "PalmPay" },
+            { name: "Mustapha Nnamdi", amount: "₦30,000", bank: "USA" }
+        ];
+
+        let popupIndex = 0;
+        const livePopup = document.getElementById('livePopup');
+        const popupName = document.getElementById('popupName');
+        const popupDetails = document.getElementById('popupDetails');
+
+        function showPopup() {
+            const current = popupData[popupIndex];
+            popupName.textContent = current.name;
+            popupDetails.textContent = `Withdrew ${current.amount} to ${current.bank}`;
+
+            // Slide in
+            livePopup.classList.remove('-translate-x-96', 'opacity-0');
+            livePopup.classList.add('translate-x-0', 'opacity-100');
+
+            // Slide out after 3.5s
+            setTimeout(() => {
+                livePopup.classList.remove('translate-x-0', 'opacity-100');
+                livePopup.classList.add('-translate-x-96', 'opacity-0');
+            }, 3500);
+
+            popupIndex = (popupIndex + 1) % popupData.length;
+        }
+
+        // Trigger popup every 6 seconds
+        setInterval(showPopup, 6000);
+        setTimeout(showPopup, 1500);
+
+        // Generate 1,000 Withdrawal Records for the Ledger Table
+        const firstNames = ["James", "Chinedu", "Grace", "Moses", "Funmilayo", "Amina", "Esther", "Segun", "Mustapha", "Chioma", "Oluwaseun", "Fatima", "Emeka", "Zainab", "Ibrahim", "Blessing", "David", "Tunde", "Ngozi", "Victor"];
+        const lastNames = ["Udoh", "Eze", "Lawal", "Nwachukwu", "Audu", "Adeyemi", "Zagi", "Mohammed", "Nnamdi", "Okoro", "Okafor", "Adesewa", "Abiola", "Okonkwo", "Yakubu", "Balogun", "Okafor", "Sani"];
+        const banks = ["OPay", "Moniepoint", "PalmPay", "UBA", "Access Bank", "GTBank", "First Bank", "Kuda"];
+        const timeAgoList = ["10 minutes ago", "12 minutes ago", "15 minutes ago", "27 minutes ago", "30 minutes ago", "33 minutes ago", "37 minutes ago", "42 minutes ago", "1 hour ago", "2 hours ago"];
+
+        const allRecords = [];
+        for (let i = 1; i <= 1000; i++) {
+            const fName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            const amountVal = Math.floor(Math.random() * (150000 - 5000 + 1)) + 5000;
+            const formattedAmount = "₦" + amountVal.toLocaleString();
+            const bank = banks[Math.floor(Math.random() * banks.length)];
+            const timePaid = timeAgoList[Math.floor(Math.random() * timeAgoList.length)];
+            
+            allRecords.push({
+                id: `#${i}`,
+                name: `${fName} ${lName}`,
+                initial: fName.charAt(0),
+                amount: formattedAmount,
+                bank: bank,
+                time: timePaid
+            });
+        }
+
+        let currentPage = 1;
+        const rowsPerPage = 20;
+        let filteredRecords = [...allRecords];
+
+        const ledgerBody = document.getElementById('ledgerBody');
+        const ledgerSearch = document.getElementById('ledgerSearch');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function renderTable() {
+            ledgerBody.innerHTML = "";
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const paginatedItems = filteredRecords.slice(start, end);
+
+            if (paginatedItems.length === 0) {
+                ledgerBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-zinc-500">No matching withdrawal records found.</td></tr>`;
+                return;
+            }
+
+            paginatedItems.forEach(rec => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-[#162D1F]/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-4 px-6 text-zinc-400 font-medium">${rec.id}</td>
+                    <td class="py-4 px-6 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-[#1A3827] text-socialGreen font-bold flex items-center justify-center text-xs">${rec.initial}</div>
+                        <span class="font-semibold text-white">${rec.name}</span>
+                    </td>
+                    <td class="py-4 px-6 font-bold text-socialGreen">${rec.amount}</td>
+                    <td class="py-4 px-6 text-zinc-300">${rec.bank}</td>
+                    <td class="py-4 px-6 text-right text-zinc-400 text-xs">${rec.time}</td>
+                `;
+                ledgerBody.appendChild(tr);
+            });
+
+            const totalPages = Math.ceil(filteredRecords.length / rowsPerPage) || 1;
+            pageIndicator.innerText = `Page ${currentPage} of ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage >= totalPages;
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            renderTable();
+            document.getElementById('payouts').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        ledgerSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            filteredRecords = allRecords.filter(rec => 
+                rec.name.toLowerCase().includes(query) || 
+                rec.bank.toLowerCase().includes(query) || 
+                rec.amount.toLowerCase().includes(query) ||
+                rec.id.toLowerCase().includes(query)
+            );
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Initial table load
+        renderTable();
+    </script>
+</body>
+</html>
