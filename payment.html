@@ -64,7 +64,7 @@
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <span id="planTitleBadge" class="text-[10px] font-bold uppercase tracking-wider text-socialGreen bg-[#1A3827] px-2.5 py-1 rounded-md border border-[#234D33]">15K PACKAGE PLAN</span>
-                    <h2 id="planAmountDisplay" class="text-3xl sm:text-4xl font-black text-white mt-2">₦15,200</h2>
+                    <h2 id="planAmountDisplay" class="text-3xl sm:text-4xl font-black text-white mt-2">₦15,000</h2>
                 </div>
                 <div class="text-right">
                     <div class="flex items-center gap-1.5 text-socialGreen text-xs font-bold mb-1 justify-end">
@@ -112,7 +112,7 @@
             <div>
                 <p class="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Amount Due</p>
                 <div class="bg-[#0B130E] border border-[#1F3827] rounded-xl px-4 py-3">
-                    <span id="dbAmountDue" class="text-sm font-extrabold text-socialGreen">₦15,200</span>
+                    <span id="dbAmountDue" class="text-sm font-extrabold text-socialGreen">₦15,000</span>
                 </div>
             </div>
 
@@ -131,7 +131,7 @@
             <ol class="space-y-3 text-xs text-zinc-300 leading-relaxed list-none">
                 <li class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-[#1A3827] text-socialGreen font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">1</span>
-                    <span>Transfer the exact amount displayed above (<strong id="noticeAmount">₦15,200</strong>) and confirm your payment only after the transaction is completed on your banking app.</span>
+                    <span>Transfer the exact amount displayed above (<strong id="noticeAmount">₦15,000</strong>) and confirm your payment only after the transaction is completed on your banking app.</span>
                 </li>
                 <li class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-[#1A3827] text-socialGreen font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">2</span>
@@ -139,7 +139,7 @@
                 </li>
                 <li class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-[#1A3827] text-socialGreen font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">3</span>
-                    <span>Transfer exactly <strong id="noticeAmount2">₦15,200</strong> for <strong id="noticePlanName">15K-Package Plan</strong> to the account provided.</span>
+                    <span>Transfer exactly <strong id="noticeAmount2">₦15,000</strong> for <strong id="noticePlanName">15K-Package Plan</strong> to the account provided.</span>
                 </li>
                 <li class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-[#1A3827] text-socialGreen font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">4</span>
@@ -187,7 +187,7 @@
 
         // Determine Plan and Amount from URL or localStorage
         let selectedPlan = "Standard";
-        let planAmount = 15200;
+        let planAmount = 15000;
         let planTitle = "15K PACKAGE PLAN";
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -198,7 +198,7 @@
             const amt = parseInt(amountParam);
             if (amt >= 30000 || planParam === 'premium' || planParam === '30k') {
                 selectedPlan = "Pro VIP";
-                planAmount = 30400;
+                planAmount = 30000;
                 planTitle = "30K VIP PACKAGE PLAN";
             }
         } else {
@@ -208,7 +208,7 @@
                     const planObj = JSON.parse(savedPlan);
                     if (planObj.amount >= 30000 || planObj.name === 'Premium' || planObj.name === 'Pro VIP') {
                         selectedPlan = "Pro VIP";
-                        planAmount = 30400;
+                        planAmount = 30000;
                         planTitle = "30K VIP PACKAGE PLAN";
                     }
                 } catch(e) {}
